@@ -1,5 +1,4 @@
 ARG PYTHON_BUILDER_IMAGE=3.12-slim-bullseye
-ARG PYTHON_RUN_IMAGE=gcr.io/distroless/cc:nonroot
 
 FROM python:${PYTHON_BUILDER_IMAGE} as python-base
 ENV PATH="/workspace/app/.venv/bin:/usr/local/bin:$PATH" \
@@ -28,16 +27,16 @@ RUN apt-get update \
 FROM python-base AS build-base
 WORKDIR /workspace/app
 
-COPY pyproject.toml poetry.lock README.md .pre-commit-config.yaml LICENSE Makefile ./
+COPY pyproject.toml poetry.lock README.md .pre-commit-config.yaml LICENSE ./
 RUN python -m venv --copies /workspace/app/.venv \
     && . /workspace/app/.venv/bin/activate \
     && poetry config virtualenvs.in-project true \
-    && poetry install --no-interaction --no-ansi
+    && poetry install --no-interaction --no-ansi --no-root
 
 COPY tools ./tools/
 COPY src ./src/
 
-RUN make build
+RUN poetry install --no-interaction
 
 VOLUME /workspace/app
 
@@ -53,7 +52,7 @@ RUN addgroup --system --gid 65532 nonroot \
 WORKDIR /workspace/app
 COPY --from=build-base --chown=65532:65532 /workspace/app /workspace/app
 
-FROM ${PYTHON_RUN_IMAGE} as run-image
+FROM python-base as run-image
 ARG ENV_SECRETS="runtime-secrets"
 ARG CHIPSET_ARCH=x86_64-linux-gnu
 ARG LITESTAR_APP="app.asgi:create_app"
@@ -82,8 +81,9 @@ COPY --from=run-base /usr/lib/${CHIPSET_ARCH}/libffi* /usr/lib/${CHIPSET_ARCH}/
 COPY --from=run-base /lib/${CHIPSET_ARCH}/libexpat* /lib/${CHIPSET_ARCH}/
 COPY --from=run-base --chown=65532:65532 /workspace/app /workspace/app
 
+WORKDIR /workspace/app/src
 STOPSIGNAL SIGINT
 EXPOSE 8000
 ENTRYPOINT ["tini","--"]
-CMD ["litestar","run","--host","0.0.0.0","--port","8000"]
+CMD ["litestar", "run","--host","0.0.0.0","--port","8000"]
 VOLUME /workspace/app

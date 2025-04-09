@@ -1,3 +1,5 @@
+name: app-production
+
 services:
   db:
     image: postgres:latest
@@ -27,7 +29,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: deploy/docker/run/Dockerfile.distroless
+      dockerfile: deploy/docker/run/Dockerfile
     restart: always
     depends_on:
       db:

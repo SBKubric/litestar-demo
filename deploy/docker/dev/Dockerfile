@@ -59,8 +59,6 @@ COPY pyproject.toml poetry.lock README.md .pre-commit-config.yaml LICENSE Makefi
 # Copy scripts, tools, etc.
 COPY tools ./tools/
 
-ENV PATH="/opt/nodeenv/bin:$PATH"
-
 # Install Python dependencies
 RUN poetry config virtualenvs.create true \
   && poetry install --no-interaction --no-root --all-extras --with dev
