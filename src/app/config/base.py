@@ -208,25 +208,6 @@ class LogSettings:
     OBFUSCATE_COOKIES: set[str] = field(default_factory=lambda: {"session", "XSRF-TOKEN"})
     """Request header keys to obfuscate."""
     OBFUSCATE_HEADERS: set[str] = field(default_factory=lambda: {"Authorization", "X-API-KEY", "X-XSRF-TOKEN"})
-    """Attributes of the SAQ.
-
-    [`Job`](https://github.com/tobymao/saq/blob/master/saq/job.py) to be
-    logged.
-    """
-    JOB_FIELDS: list[str] = field(
-        default_factory=lambda: [
-            "function",
-            "kwargs",
-            "key",
-            "scheduled",
-            "attempts",
-            "completed",
-            "queued",
-            "started",
-            "result",
-            "error",
-        ],
-    )
     """Attributes of the [Request][litestar.connection.request.Request] to be
     logged."""
     REQUEST_FIELDS: list[RequestExtractorField] = field(

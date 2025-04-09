@@ -12,6 +12,7 @@ class User(BigIntBase):
     __tablename__ = "user_account"
     __table_args__ = {"comment": "User accounts"}
 
+    email: Mapped[str] = mapped_column(String(length=255), unique=True, nullable=False)
     name: Mapped[str | None] = mapped_column(nullable=True, default=None)
     surname: Mapped[str | None] = mapped_column(nullable=True, default=None)
     hashed_password: Mapped[str | None] = mapped_column(String(length=255), nullable=True, default=None)
