@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from datetime import date, datetime
+from datetime import datetime
 
 from advanced_alchemy.base import BigIntBase
-from sqlalchemy import String
+from sqlalchemy import String, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -16,8 +16,8 @@ class User(BigIntBase):
     name: Mapped[str | None] = mapped_column(nullable=True, default=None)
     surname: Mapped[str | None] = mapped_column(nullable=True, default=None)
     hashed_password: Mapped[str | None] = mapped_column(String(length=255), nullable=True, default=None)
-    created_at: Mapped[date] = mapped_column(default=datetime.now)
-    updated_at: Mapped[date] = mapped_column(default=datetime.now)
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now())
 
     @hybrid_property
     def has_password(self) -> bool:

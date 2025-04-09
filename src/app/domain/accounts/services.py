@@ -28,14 +28,18 @@ class UserService(SQLAlchemyAsyncRepositoryService[m.User]):
     repository_type = UserRepository
     match_fields = ["email"]
 
-    async def to_model_on_create(self, data: ModelDictT[m.User]) -> ModelDictT[m.User]:
-        return await self._populate_model(data)
+    async def create(self, data: ModelDictT[m.User], **kwargs: Any) -> m.User:
+        print("HEELLO")
+        data = await self._populate_model(data)
+        return await super().create(data, **kwargs)
 
-    async def to_model_on_update(self, data: ModelDictT[m.User]) -> ModelDictT[m.User]:
-        return await self._populate_model(data)
+    async def update(self, data: ModelDictT[m.User], item_id: Any | None = None, **kwargs: Any) -> m.User:
+        data = await self._populate_model(data)
+        return await super().update(data=data, item_id=item_id, **kwargs)
 
-    async def to_model_on_upsert(self, data: ModelDictT[m.User]) -> ModelDictT[m.User]:
-        return await self._populate_model(data)
+    async def upsert(self, data: ModelDictT[m.User], item_id: Any | None = None, **kwargs: Any) -> m.User:
+        data = await self._populate_model(data)
+        return await super().upsert(data=data, item_id=item_id, **kwargs)
 
     async def authenticate(self, username: str, password: bytes | str) -> m.User:
         """Authenticate a user against the stored hashed password."""
@@ -71,4 +75,5 @@ class UserService(SQLAlchemyAsyncRepositoryService[m.User]):
     async def _populate_with_hashed_password(self, data: ModelDictT[m.User]) -> ModelDictT[m.User]:
         if is_dict(data) and (password := data.pop("password", None)) is not None:
             data["hashed_password"] = await crypt.get_password_hash(password)
+            print("PASS WAS HASHED", data)
         return data

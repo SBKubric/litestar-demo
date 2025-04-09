@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING
 import sqlalchemy as sa
 from alembic import op
 from advanced_alchemy.types import EncryptedString, EncryptedText, GUID, ORA_JSONB, DateTimeUTC
-from sqlalchemy import Text  # noqa: F401
+from sqlalchemy import Text, func  # noqa: F401
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -57,8 +57,8 @@ def schema_upgrades() -> None:
     sa.Column('name', sa.String(), nullable=True),
     sa.Column('surname', sa.String(), nullable=True),
     sa.Column('hashed_password', sa.String(length=255), nullable=True),
-    sa.Column('created_at', sa.Date(), nullable=False),
-    sa.Column('updated_at', sa.Date(), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False, server_default=func.now()),
+    sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False, server_default=func.now()),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_user_account')),
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('email', name=op.f('uq_user_account_email'))

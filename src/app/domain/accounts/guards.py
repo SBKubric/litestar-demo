@@ -38,7 +38,7 @@ async def current_user_from_token(token: Token, connection: ASGIConnection[Any, 
     """
     service = await anext(provide_users_service(alchemy.provide_session(connection.app.state, connection.scope)))
     user = await service.get_one_or_none(email=token.sub)
-    return user if user and user.is_active else None
+    return user
 
 
 auth = JWTAuth[m.User](
