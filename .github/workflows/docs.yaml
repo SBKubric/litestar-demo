@@ -3,9 +3,9 @@ name: Documentation Building
 on:
   release:
     types: [published]
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
 
 jobs:
   docs:
