@@ -16,9 +16,7 @@ services:
     ports:
       - "8000:8000"
     tty: true
-    environment:
-      SAQ_USE_SERVER_LIFESPAN: "false"
-    command: litestar run --reload --host 0.0.0.0 --port 8000
+    command: poetry run app run --reload --host 0.0.0.0 --port 8000
     restart: always
     <<: *development-volumes
   migrator:
