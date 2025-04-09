@@ -12,6 +12,5 @@ settings = get_settings()
 @dataclass
 class SystemHealth:
     database_status: Literal["online", "offline"]
-    cache_status: Literal["online", "offline"]
     app: str = settings.app.NAME
     version: str = current_version

@@ -54,7 +54,7 @@ class ApplicationCore(InitPluginProtocol, CLIPluginProtocol):
         from app.config import app as config
         from app.config import get_settings
         from app.db import models as m
-        from app.domain.accounts.controllers import UserController
+        from app.domain.accounts.controllers import AccessController, UserController
         from app.domain.accounts.deps import provide_user
         from app.domain.accounts.guards import auth as jwt_auth
         from app.domain.accounts.services import UserService
@@ -91,6 +91,7 @@ class ApplicationCore(InitPluginProtocol, CLIPluginProtocol):
         # routes
         app_config.route_handlers.extend(
             [
+                AccessController,
                 UserController,
                 SystemController,
             ],

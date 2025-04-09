@@ -40,7 +40,7 @@ version = "0.0.1"
 [tool.poetry.dependencies]
 python = "^3.12, <4.0"
 litestar = {extras = ["jwt"], version = "^2"}
-advanced-alchemy = "^0.20"
+advanced-alchemy = {extras = ["litestar"], version = "^0.20"}
 asyncpg = "*"
 python-dotenv = "^1"
 litestar-granian = "^0"

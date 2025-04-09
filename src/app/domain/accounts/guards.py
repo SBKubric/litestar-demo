@@ -50,6 +50,5 @@ auth = JWTAuth[m.User](
         urls.ACCOUNT_REGISTER,
         "^/schema",
         "^/public/",
-        "^/saq/static/",
     ],
 )

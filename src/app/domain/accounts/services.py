@@ -8,6 +8,8 @@ from advanced_alchemy.repository import (
 from advanced_alchemy.service import (
     ModelDictT,
     SQLAlchemyAsyncRepositoryService,
+    is_dict,
+    schema_dump,
 )
 from litestar.exceptions import PermissionDeniedException
 
@@ -38,12 +40,14 @@ class UserService(SQLAlchemyAsyncRepositoryService[m.User]):
     async def authenticate(self, username: str, password: bytes | str) -> m.User:
         """Authenticate a user against the stored hashed password."""
         db_obj = await self.get_one_or_none(email=username)
+        print(f"db_obj: {db_obj.email, db_obj.hashed_password}")
         if db_obj is None:
             msg = "User not found or password invalid"
             raise PermissionDeniedException(detail=msg)
         if db_obj.hashed_password is None:
             msg = "User not found or password invalid."
             raise PermissionDeniedException(detail=msg)
+        print(f"pswd verify: {crypt.verify_password(password, db_obj.hashed_password)}")
         if not await crypt.verify_password(password, db_obj.hashed_password):
             msg = "User not found or password invalid"
             raise PermissionDeniedException(detail=msg)
@@ -59,3 +63,12 @@ class UserService(SQLAlchemyAsyncRepositoryService[m.User]):
             raise PermissionDeniedException(detail=msg)
         db_obj.hashed_password = await crypt.get_password_hash(data["new_password"])
         await self.repository.update(db_obj)
+
+    async def _populate_model(self, data: ModelDictT[m.User]) -> ModelDictT[m.User]:
+        data = schema_dump(data)
+        return await self._populate_with_hashed_password(data)
+
+    async def _populate_with_hashed_password(self, data: ModelDictT[m.User]) -> ModelDictT[m.User]:
+        if is_dict(data) and (password := data.pop("password", None)) is not None:
+            data["hashed_password"] = await crypt.get_password_hash(password)
+        return data
