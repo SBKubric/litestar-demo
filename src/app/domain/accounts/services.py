@@ -37,15 +37,12 @@ class UserService(SQLAlchemyAsyncRepositoryService[m.User]):
         db_obj = await self.get_one_or_none(email=username)
         if db_obj is None:
             msg = "User not found or password invalid"
-            msg = "User is None"
             raise PermissionDeniedException(detail=msg)
         if db_obj.hashed_password is None:
             msg = "User not found or password invalid."
-            msg = "Pswd hash is none."
             raise PermissionDeniedException(detail=msg)
         if not await crypt.verify_password(password, db_obj.hashed_password):
             msg = "User not found or password invalid"
-            msg = "cant verify password"
             raise PermissionDeniedException(detail=msg)
         return db_obj
 
@@ -67,5 +64,4 @@ class UserService(SQLAlchemyAsyncRepositoryService[m.User]):
     async def _populate_with_hashed_password(self, data: ModelDictT[m.User]) -> ModelDictT[m.User]:
         if is_dict(data) and (password := data.pop("password", None)) is not None:
             data["hashed_password"] = await crypt.get_password_hash(password)
-            print("PASS WAS HASHED", data)
         return data

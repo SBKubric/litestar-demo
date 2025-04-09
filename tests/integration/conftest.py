@@ -67,7 +67,6 @@ async def _seed_db(
         engine: The SQLAlchemy engine instance.
         sessionmaker: The SQLAlchemy sessionmaker factory.
         raw_users: Test users to add to the database
-        raw_teams: Test teams to add to the database
 
     """
 
@@ -82,7 +81,7 @@ async def _seed_db(
     pk_column = "id"
     seq_name = "user_account_id_seq"
     await sessionmaker().execute(
-        text(f"SELECT setval('{seq_name}', (SELECT MAX({pk_column}) FROM {table_name}) + 1, false)")
+        text(f"SELECT setval('{seq_name}', (SELECT MAX({pk_column}) FROM {table_name}) + 1, false)")  # noqa: S608
     )
     yield
 

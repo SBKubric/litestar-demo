@@ -2,7 +2,7 @@
 """users
 
 Revision ID: 838c3ef07ad3
-Revises: 
+Revises:
 Create Date: 2025-04-09 11:49:03.989173+00:00
 
 """

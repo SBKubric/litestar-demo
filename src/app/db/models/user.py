@@ -1,11 +1,14 @@
 from __future__ import annotations
 
-from datetime import datetime
+from typing import TYPE_CHECKING
 
 from advanced_alchemy.base import BigIntBase
 from sqlalchemy import String, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column
+
+if TYPE_CHECKING:
+    from datetime import datetime
 
 
 class User(BigIntBase):

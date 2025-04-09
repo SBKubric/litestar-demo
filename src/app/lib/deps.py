@@ -6,7 +6,6 @@ from typing import (
     Any,
     Literal,
     NotRequired,
-    Optional,
     TypedDict,
     TypeVar,
     Union,
@@ -43,13 +42,13 @@ if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
     from sqlalchemy.orm import Session
 
-DTorNone = Optional[datetime.datetime]
-StringOrNone = Optional[str]
-UuidOrNone = Optional[UUID]
-IntOrNone = Optional[int]
-BooleanOrNone = Optional[bool]
+DTorNone = None | datetime.datetime
+StringOrNone = None | str
+UuidOrNone = None | UUID
+IntOrNone = None | int
+BooleanOrNone = None | bool
 SortOrder = Literal["asc", "desc"]
-SortOrderOrNone = Optional[SortOrder]
+SortOrderOrNone = None | SortOrder
 AsyncServiceT_co = TypeVar("AsyncServiceT_co", bound=SQLAlchemyAsyncRepositoryService[Any], covariant=True)
 SyncServiceT_co = TypeVar("SyncServiceT_co", bound=SQLAlchemySyncRepositoryService[Any], covariant=True)
 
@@ -173,8 +172,6 @@ def create_service_provider(
                 error_messages=error_messages,
                 load=load,
                 execution_options=execution_options,
-                # uniquify=uniquify,
-                # count_with_window_function=count_with_window_function,
             ) as service:
                 yield service
 
@@ -190,8 +187,6 @@ def create_service_provider(
             error_messages=error_messages,
             load=load,
             execution_options=execution_options,
-            # uniquify=uniquify,
-            # count_with_window_function=count_with_window_function,
         ) as service:
             yield service
 
@@ -281,7 +276,7 @@ def create_filter_dependencies(
     return deps
 
 
-def _create_statement_filters(
+def _create_statement_filters(  # noqa: C901
     config: FilterConfig, dep_defaults: DependencyDefaults = DEPENDENCY_DEFAULTS
 ) -> dict[str, Provide]:
     """Create filter dependencies based on configuration.
@@ -392,7 +387,7 @@ def _create_statement_filters(
     return filters
 
 
-def _create_filter_aggregate_function(config: FilterConfig) -> Callable[..., list[FilterTypes]]:
+def _create_filter_aggregate_function(config: FilterConfig) -> Callable[..., list[FilterTypes]]:  # noqa: C901
     """Create a filter function based on the provided configuration.
 
     Args:
