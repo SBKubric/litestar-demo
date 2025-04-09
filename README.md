@@ -1,17 +1,12 @@
 # Litestar Webapp Demo
 
-This is a reference application that you can use to get your next Litestar application running quickly.
-
-It contains most of the boilerplate required for a production web API with features like:
-
--   Latest Litestar configured with best practices
--   Integration with [SQLAlchemy 2.0](https://www.sqlalchemy.org/), [SAQ (Simple Asynchronous Queue)](https://saq-py.readthedocs.io/en/latest/), [Structlog](https://www.structlog.org/en/stable/), and [Granian](<(https://www.structlog.org/en/stable/)](https://github.com/emmett-framework/granian)>)
--   Extends built-in Litestar click CLI
--   Multi-stage Docker build using a Distroless base.
+Небольшой шаблон на litestar, использующий SQLAlchemy 2.0, SQLAlchemyAdvanced, msgspeck, и Granian.
+Основа проекта была взята из [litestar-fullstack](https://github.com/litestar-org/litestar-fullstack),
+просто потому что хорошо продумана и удобна для старта нового проекта.
 
 ## Quick Start
 
-To quickly get a development environment running, run the following:
+Чтобы запустить проект, выполните следующие команды:
 
 ```shell
 make install
@@ -22,18 +17,16 @@ make install
 
 ```bash
 cp .env.local.example .env
-make start-infra # this starts a database and redis instance only
-# this will start the SAQ worker, Vite development process, and Litestar
-uv run app run
+make start-infra # this starts a database
 
-# to stop the database and redis, run
+# to stop the database
 make stop-infra
 ```
 
 ### Docker
 
-If you want to run the entire development environment containerized, you can run the following:
+Если есть желание запустить проект через docker, то можно воспользоваться следующей командой:
 
 ```bash
-docker compose up
+make start-app
 ```
