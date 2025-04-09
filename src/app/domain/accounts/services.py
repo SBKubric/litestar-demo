@@ -28,32 +28,24 @@ class UserService(SQLAlchemyAsyncRepositoryService[m.User]):
     repository_type = UserRepository
     match_fields = ["email"]
 
-    async def create(self, data: ModelDictT[m.User], **kwargs: Any) -> m.User:
-        print("HEELLO")
+    async def to_model(self, data: ModelDictT[m.User], operation: str | None = None) -> m.User:
         data = await self._populate_model(data)
-        return await super().create(data, **kwargs)
-
-    async def update(self, data: ModelDictT[m.User], item_id: Any | None = None, **kwargs: Any) -> m.User:
-        data = await self._populate_model(data)
-        return await super().update(data=data, item_id=item_id, **kwargs)
-
-    async def upsert(self, data: ModelDictT[m.User], item_id: Any | None = None, **kwargs: Any) -> m.User:
-        data = await self._populate_model(data)
-        return await super().upsert(data=data, item_id=item_id, **kwargs)
+        return await super().to_model(data, operation=operation)
 
     async def authenticate(self, username: str, password: bytes | str) -> m.User:
         """Authenticate a user against the stored hashed password."""
         db_obj = await self.get_one_or_none(email=username)
-        print(f"db_obj: {db_obj.email, db_obj.hashed_password}")
         if db_obj is None:
             msg = "User not found or password invalid"
+            msg = "User is None"
             raise PermissionDeniedException(detail=msg)
         if db_obj.hashed_password is None:
             msg = "User not found or password invalid."
+            msg = "Pswd hash is none."
             raise PermissionDeniedException(detail=msg)
-        print(f"pswd verify: {crypt.verify_password(password, db_obj.hashed_password)}")
         if not await crypt.verify_password(password, db_obj.hashed_password):
             msg = "User not found or password invalid"
+            msg = "cant verify password"
             raise PermissionDeniedException(detail=msg)
         return db_obj
 

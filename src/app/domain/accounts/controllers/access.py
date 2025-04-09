@@ -37,20 +37,6 @@ class AccessController(Controller):
         user = await users_service.authenticate(data.username, data.password)
         return auth.login(user.email)
 
-    @post(operation_id="AccountLogout", path=urls.ACCOUNT_LOGOUT, exclude_from_auth=True)
-    async def logout(self, request: Request) -> Response:
-        """Account Logout"""
-        request.cookies.pop("Bearer", None)
-        request.clear_session()
-
-        response = Response(
-            {"message": "OK"},
-            status_code=200,
-        )
-        response.delete_cookie("Bearer")
-
-        return response
-
     @post(operation_id="AccountRegister", path=urls.ACCOUNT_REGISTER)
     async def signup(
         self,

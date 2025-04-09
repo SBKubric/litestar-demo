@@ -54,6 +54,7 @@ class ApplicationCore(InitPluginProtocol, CLIPluginProtocol):
         from app.config import app as config
         from app.config import get_settings
         from app.db import models as m
+        from app.domain.accounts import signals as account_signals
         from app.domain.accounts.controllers import AccessController, UserController
         from app.domain.accounts.deps import provide_user
         from app.domain.accounts.guards import auth as jwt_auth
@@ -115,6 +116,8 @@ class ApplicationCore(InitPluginProtocol, CLIPluginProtocol):
         # dependencies
         dependencies = {"current_user": Provide(provide_user)}
         app_config.dependencies.update(dependencies)
+        # listeners
+        app_config.listeners.extend([account_signals.user_created_event_handler])
         return app_config
 
     def _cache_key_builder(self, request: Request) -> str:
