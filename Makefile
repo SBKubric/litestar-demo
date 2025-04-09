@@ -27,24 +27,27 @@ help:                                               ## Display this help text fo
 # =============================================================================
 # Developer Utils
 # =============================================================================
-.PHONY: install-poetry
-install-poetry:                                         ## Install latest version of uv
+.PHONY: install poetry + python
+install-poetry:                                         ## Install poetry
 	@echo "${INFO} Installing pyenv..."
 	@curl -fsSL https://pyenv.run | bash
 	@pyenv install 3.12
 	@pyenv global 3.12
+
 	@echo "${INFO} Installing poetry..."
-	@curl -sSL https://install.python-poetry.org | python3 - | sh >/dev/null 2>&1
+	@pip install poetry==1.8.3
 	@echo "${OK} Poetry installed successfully"
 
 .PHONY: install
-install: destroy clean                              ## Install the project, dependencies, and pre-commit for local development
+install: destroy clean                             ## Install the project, dependencies, and pre-commit for local development
+	@pyenv activate litestar-demo > /dev/null 2>&1
 	@echo "${INFO} Starting fresh installation..."
 	@poetry install -q -n --with dev
 	@echo "${OK} Installation complete! 🎉"
 
 .PHONY: upgrade
 upgrade:                                            ## Upgrade all dependencies to the latest stable versions
+	@pyenv activate litestar-demo > /dev/null 2>&1
 	@echo "${INFO} Updating all dependencies... 🔄"
 	@poetry update
 	@poetry lock
@@ -160,24 +163,24 @@ docs-clean:                                        ## Dump the existing built do
 .PHONY: docs-serve
 docs-serve: docs-clean                             ## Serve the docs locally
 	@echo "${INFO} Starting documentation server... 📚"
-	@uv run sphinx-autobuild docs docs/_build/ -j auto --watch app --watch docs --watch tests --watch CONTRIBUTING.rst --port 8002
+	@poetry run sphinx-autobuild docs docs/_build/ -j auto --watch app --watch docs --watch tests --watch CONTRIBUTING.rst --port 8002
 
 .PHONY: docs
 docs: docs-clean                                   ## Dump the existing built docs and rebuild them
 	@echo "${INFO} Building documentation... 📝"
-	@uv run sphinx-build -M html docs docs/_build/ -E -a -j auto -W --keep-going
+	@poetry run sphinx-build -M html docs docs/_build/ -E -a -j auto -W --keep-going
 	@echo "${OK} Documentation built successfully"
 
 .PHONY: docs-linkcheck
 docs-linkcheck:                                    ## Run the link check on the docs
 	@echo "${INFO} Checking documentation links... 🔗"
-	@uv run sphinx-build -b linkcheck ./docs ./docs/_build -D linkcheck_ignore='http://.*','https://.*' >/dev/null 2>&1
+	@poetry run sphinx-build -b linkcheck ./docs ./docs/_build -D linkcheck_ignore='http://.*','https://.*' >/dev/null 2>&1
 	@echo "${OK} Link check complete"
 
 .PHONY: docs-linkcheck-full
 docs-linkcheck-full:                               ## Run the full link check on the docs
 	@echo "${INFO} Running full link check... 🔗"
-	@uv run sphinx-build -b linkcheck ./docs ./docs/_build -D linkcheck_anchors=0 >/dev/null 2>&1
+	@poetry run sphinx-build -b linkcheck ./docs ./docs/_build -D linkcheck_anchors=0 >/dev/null 2>&1
 	@echo "${OK} Full link check complete"
 
 
@@ -207,3 +210,21 @@ wipe-infra:                                           ## Remove local container 
 infra-logs:                                           ## Tail development infrastructure logs
 	@echo "${INFO} Tailing infrastructure logs... 📋"
 	@docker compose -f deploy/docker-compose.infra.yml logs -f
+
+.PHONY: start-app
+start-app:                                          ## Start the app
+	@echo "${INFO} Starting app... 🚀"
+	@docker compose -f docker-compose.yml -f docker-compose.override.yml up -d
+	@echo "${OK} App started"
+
+.PHONY: stop-app
+stop-app:                                           ## Stop the app
+	@echo "${INFO} Stopping app... 🛑"
+	@docker compose -f docker-compose.yml -f docker-compose.override.yml down
+	@echo "${OK} App stopped"
+
+.PHONY: wipe-app
+wipe-app:                                           ## Remove app container info
+	@echo "${INFO} Wiping app... 🧹"
+	@docker compose -f docker-compose.yml -f docker-compose.override.yml down -v --remove-orphans > /dev/null 2>&1
+	@echo "${OK} App wiped clean"
