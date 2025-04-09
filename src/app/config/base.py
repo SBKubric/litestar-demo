@@ -45,7 +45,7 @@ class DatabaseSettings:
     """Amount of time to wait before recycling connections."""
     POOL_PRE_PING: bool = field(default_factory=get_env("DATABASE_PRE_POOL_PING", False))
     """Optionally ping database before fetching a session from the connection pool."""
-    URL: str = field(default_factory=get_env("DATABASE_URL", "sqlite+aiosqlite:///db.sqlite3"))
+    URL: str = field(default_factory=get_env("DATABASE_URL", "postgresql+asyncpg://app:app@localhost:15432/app"))
     """SQLAlchemy Database URL."""
     MIGRATION_CONFIG: str = field(
         default_factory=get_env("DATABASE_MIGRATION_CONFIG", f"{BASE_DIR}/db/migrations/alembic.ini")

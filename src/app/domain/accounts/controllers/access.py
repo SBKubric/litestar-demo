@@ -15,7 +15,6 @@ from app.domain.accounts.deps import provide_users_service
 from app.domain.accounts.guards import auth, requires_active_user
 from app.domain.accounts.schemas import AccountLogin, AccountRegister, User
 from app.domain.accounts.services import RoleService
-from app.lib.deps import create_service_provider
 
 if TYPE_CHECKING:
     from litestar.security.jwt import Login
@@ -30,7 +29,6 @@ class AccessController(Controller):
     tags = ["Access"]
     dependencies = {
         "users_service": Provide(provide_users_service),
-        "roles_service": Provide(create_service_provider(RoleService)),
     }
 
     @post(operation_id="AccountLogin", path=urls.ACCOUNT_LOGIN, exclude_from_auth=True)

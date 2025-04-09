@@ -10,8 +10,6 @@ USER_DEPENDENCY_KEY = "current_user"
 DTO_INFO_KEY = "info"
 """Default page size to use."""
 DEFAULT_PAGINATION_SIZE = 20
-"""The name of the default role assigned to all users."""
-CACHE_EXPIRATION: int = 60
 """The endpoint to use for the the service health check."""
 HEALTH_ENDPOINT = "/health"
 """The site index URL."""

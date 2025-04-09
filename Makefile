@@ -82,12 +82,6 @@ lock:                                              ## Rebuild lockfiles from scr
 	@echo "${OK} Lockfiles updated"
 
 
-.PHONY: run
-run:                                               ## Run the application in dev container
-	@docker compose -f docker-compose.yml -f docker-compose.override.yml up -d
-
-
-
 # =============================================================================
 # Tests, Linting, Coverage
 # =============================================================================
