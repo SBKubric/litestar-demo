@@ -62,7 +62,8 @@ COPY tools ./tools/
 ENV PATH="/opt/nodeenv/bin:$PATH"
 
 # Install Python dependencies
-RUN poetry install --no-interaction --all-extras --with dev
+RUN poetry config virtualenvs.create true \
+  && poetry install --no-interaction --no-root --all-extras --with dev
 
 # Copy remaining source
 COPY docs/ docs/

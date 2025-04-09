@@ -222,3 +222,8 @@ wipe-app:                                           ## Remove app container info
 	@echo "${INFO} Wiping app... 🧹"
 	@docker compose -f docker-compose.yml -f docker-compose.override.yml down -v --remove-orphans > /dev/null 2>&1
 	@echo "${OK} App wiped clean"
+
+.PHONY: app-logs
+app-logs:                                           ## Tail development app logs
+	@echo "${INFO} Tailing infrastructure logs... 📋"
+	@docker compose -f docker-compose.yml -f docker-compose.override.yml logs -f
