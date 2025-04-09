@@ -17,6 +17,7 @@
 make install-poetry
 make install
 . .venv/bin/activate
+make start-infra # this starts a database
 poetry run app run
 ```
 
@@ -36,4 +37,10 @@ make stop-infra
 
 ```bash
 make start-app
+```
+
+Чтобы остановить приложение, выполните следующую команду:
+
+```bash
+make stop-app
 ```
