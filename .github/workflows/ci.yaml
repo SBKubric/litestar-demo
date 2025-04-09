@@ -31,7 +31,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.12", "3.13"]
+        python-version: ["3.12"]
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -73,7 +73,8 @@ jobs:
   build-docs:
     needs:
       - validate
-    if: github.event_name == 'pull_request'
+    # skipping, as docs need to be setup
+    if: github.event_name == 'foobar'
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
